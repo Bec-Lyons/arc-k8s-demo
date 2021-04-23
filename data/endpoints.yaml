@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: endpoints
-  namespace: team-a
+  namespace: app
 data:
   logs: https://logs.endpoint.internal.corpnet
   metrics: https://metrics.endpoint.internal.corpnet/v2

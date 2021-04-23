@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-vote-back
+  name: ml-container
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: azure-vote-back
+      app: ml-container
   template:
     metadata:
       labels:
-        app: azure-vote-back
+        app: ml-container
     spec:
       nodeSelector:
         kubernetes.io/arch: amd64
         kubernetes.io/os: linux
       containers:
-      - name: azure-vote-back
+      - name: ml-container
         image: redis
         ports:
         - containerPort: 6379
@@ -32,22 +32,22 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: azure-vote-back
+  name: ml-container
 spec:
   ports:
   - port: 6379
   selector:
-    app: azure-vote-back
+    app: ml-container
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-vote-front
+  name: batch-process
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: azure-vote-front
+      app: batch-process
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -56,14 +56,14 @@ spec:
   template:
     metadata:
       labels:
-        app: azure-vote-front
+        app: batch-process
     spec:
       nodeSelector:
         kubernetes.io/arch: amd64
         kubernetes.io/os: linux
       containers:
-      - name: azure-vote-front
-        image: microsoft/azure-vote-front:v1
+      - name: batch-process
+        image: microsoft/batch-process:v1
         ports:
         - containerPort: 80
         resources:
@@ -75,15 +75,15 @@ spec:
             cpu: "500m"
         env:
         - name: REDIS
-          value: "azure-vote-back"
+          value: "ml-container"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: azure-vote-front
+  name: batch-process
 spec:
   type: LoadBalancer
   ports:
   - port: 80
   selector:
-    app: azure-vote-front
+    app: batch-process
